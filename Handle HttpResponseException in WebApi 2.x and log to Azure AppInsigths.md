@@ -1,11 +1,11 @@
 
-As easy as it sounds, this proved to be a difficult task. For that reason, I will log here the steps required to make sure exceptions are being logged in the Azure AppInsights. Note that this applies to a classic WebApi project and supports Dependency Injection provided by the WebApi or Autofac.
+As easy as it sounds, this proved to be a difficult task. And that’s a good reason to detail here the steps required to make sure exceptions are being handled and logged in the Azure AppInsights.
 
-An API can make use heavily of the [HttpResponseException](https://msdn.microsoft.com/en-us/library/system.web.http.httpresponseexception(v=vs.118).aspx) which unfortunately cannot be handled as the other web application exceptions described in [Exception Handling in ASP.NET Web API](https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling). 
-Before starting, it's also recommended to check out the official docs about how to [log to Azure AppInsights](https://docs.microsoft.com/en-us/azure/application-insights/app-insights-asp-net-exceptions).
+Most of the time is handy to use the existing abstractions provided by framework, and [HttpResponseException](https://msdn.microsoft.com/en-us/library/system.web.http.httpresponseexception(v=vs.118).aspx) is just one of them. It helps translating an exception into a REST API  reponse with just a few lines of code. The difficulty comes from the fact that this is a special exception that unfortunately cannot be handled as the other web application exceptions described in [Exception Handling in ASP.NET Web API](https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/exception-handling).
 
-It turns out that two exception "traps" have to be created.
-First create a custom [ExceptionLogger](https://msdn.microsoft.com/en-us/library/system.web.http.exceptionhandling.exceptionlogger(v=vs.118).aspx) implementation that will do its logging in the Azure AppInsights. This will handle all exception, except HttpResponseException -- which has a special behavior dictated by the WebApi controllers.
+Note that this applies to a classic WebApi project and makes use of the Dependency Injection provided by the WebApi or Autofac. Before starting, it’s also recommended to check out the official docs about how to [log to Azure AppInsights](https://docs.microsoft.com/en-us/azure/application-insights/app-insights-asp-net-exceptions).
+
+It turns out that two exception "traps" have to be setup. First create a custom [ExceptionLogger](https://msdn.microsoft.com/en-us/library/system.web.http.exceptionhandling.exceptionlogger(v=vs.118).aspx) implementation that will do its logging in the Azure AppInsights. This will handle all exception, except HttpResponseException -- which has a special behavior dictated by the WebApi controllers.
 
 ```
 using System.Web.Http.ExceptionHandling;
