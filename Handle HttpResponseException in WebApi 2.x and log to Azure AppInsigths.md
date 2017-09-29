@@ -12,7 +12,6 @@ using System.Web.Http.ExceptionHandling;
 using Microsoft.ApplicationInsights;
 using System;
 using System.Web.Http;
-using Newtonsoft.Json;
 
 namespace WebApi
 {
@@ -30,7 +29,7 @@ namespace WebApi
         {
             if (context != null)
             {
-                var ex = context.Exception ?? new Exception(JsonConvert.SerializeObject(context));
+                var ex = context.Exception ?? new Exception(context.ToString());
                 _telemetryClient.TrackException(ex);
             }
 
@@ -44,7 +43,6 @@ Secondly, create a custom [ActionFilterAttribute](https://msdn.microsoft.com/en-
 
 ```
 using Microsoft.ApplicationInsights;
-using Newtonsoft.Json;
 using System;
 using System.Web.Http;
 using System.Web.Http.Filters;
@@ -67,7 +65,7 @@ namespace WebApi
                 actionExecutedContext.Response != null &&
                 !actionExecutedContext.Response.IsSuccessStatusCode)
             {
-                var ex = new Exception(JsonConvert.SerializeObject(actionExecutedContext.Response));
+                var ex = new Exception(actionExecutedContext.Response.ToString());
                 _telemetryClient.TrackException(ex);
             }
 
@@ -106,10 +104,5 @@ namespace WebApi
 }
 ```
 
-When using Newtonsoft, you might want to ensure that the serialization works, therefore adding this to your configs should do the trick:
-
-```
-GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-```
 
 I hope this helps.
