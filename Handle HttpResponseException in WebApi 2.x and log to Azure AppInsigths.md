@@ -106,4 +106,10 @@ namespace WebApi
 }
 ```
 
+When using Newtonsoft, you might want to ensure that the serialization works, therefore adding this to your configs should do the trick:
+
+```
+GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+```
+
 I hope this helps.
